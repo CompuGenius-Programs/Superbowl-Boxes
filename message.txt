@@ -1,0 +1,11 @@
+Dear ${PERSON_NAME},
+
+This is the chart for the Superbowl Boxes game:
+${BOXES_CHART}
+
+These are your boxes:
+${BOXES}
+
+For the boxes, the total cost is ${COST}.
+
+Have fun, and good luck!
