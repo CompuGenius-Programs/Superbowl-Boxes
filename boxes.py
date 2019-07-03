@@ -1,16 +1,19 @@
-#region Import required modules
 from datetime import timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from string import Template
-import random, smtplib, datetime
-#endregion
+from dotenv import load_dotenv
+import random, smtplib, datetime, os
+load_dotenv()
 
-print("Copyright (c) 2019 CompuGenius Programs")
+now = datetime.datetime.now()
+
+print("Copyright (c) %d CompuGenius Programs" % now.year)
 print("http://compugeniusprograms.tk")
 print("Press enter to continue...")
 input()
 
+organizer = input("Who is the organizer of this game? ")
 num_players = int(input("How many players? "))
 used_boxes = []
 box = ['     ' for i in range(100)]
@@ -61,7 +64,6 @@ class Player():
         if (n + 1) == num_players:
             email_main()
 
-#region Get the date and number of the Superbowl
 def superbowl_information():
     global date, superbowl_number
     now = datetime.datetime.now()
@@ -75,9 +77,7 @@ def superbowl_information():
     date = get_date(2, 2019, 6)
     date = str(date).split('-')
     date = str(date[1] + '-' + date[2] + '-' + date[0])
-#endregion
 
-#region Display the chart
 def display_boxes():
     global boxes_chart
     superbowl_information()
@@ -106,11 +106,9 @@ def display_boxes():
 """ % (box[0], box[1], box[2], box[3], box[4], box[5], box[6], box[7], box[8], box[9], box[10], box[11], box[12], box[13], box[14], box[15], box[16], box[17], box[18], box[19], box[20], box[21], box[22], box[23], box[24], box[25], box[26], box[27], box[28], box[29], box[30], box[31], box[32], box[33], box[34], box[35], box[36], box[37], box[38], box[39], box[40], box[41], box[42], box[43], box[44], box[45], box[46], box[47], box[48], box[49], box[50], box[51], box[52], box[53], box[54], box[55], box[56], box[57], box[58], box[59], box[60], box[61], box[62], box[63], box[64], box[65], box[66], box[67], box[68], box[69], box[70], box[71], box[72], box[73], box[74], box[75], box[76], box[77], box[78], box[79], box[80], box[81], box[82], box[83], box[84], box[85], box[86], box[87], box[88], box[89], box[90], box[91], box[92], box[93], box[94], box[95], box[96], box[97], box[98], box[99])
     header = "Superbowl %s Boxes, %s" % (superbowl_number, date)
     boxes_chart = str(header.center(50, ' ') + chart)
-#endregion
 
-#region Send the email
-my_address = 'compugeniusprograms@gmail.com'
-password = 'pythonprogramming'
+my_address = os.getenv("EMAIL")
+password = os.getenv("PSWRD")
 
 def save_info(name, email, boxes, cost):
     global names, emails, boxess, costs
@@ -140,11 +138,11 @@ def email_main():
     for name, email, boxes, cost in zip(names, emails, boxess, costs):
         msg = MIMEMultipart()
 
-        message = message_template.substitute(PERSON_NAME=name.title(), BOXES_CHART=boxes_chart, BOXES=boxes, COST=cost)
+        message = message_template.substitute(PERSON_NAME=name.title(), ORGANIZER_NAME=organizer.title(), BOXES_CHART=boxes_chart, BOXES=boxes, COST=cost)
 
         msg['From']="Superbowl Boxes Generator"
         msg['To']=email
-        msg['Subject']="Superbowl Boxes"
+        msg['Subject']="Your Boxes For %s's Game" % organizer.title()
 
         msg.attach(MIMEText(message, 'plain'))
 
@@ -152,7 +150,6 @@ def email_main():
         del msg
 
     s.quit()
-#endregion
 
 for n in range(num_players):
     Player.player(n)
