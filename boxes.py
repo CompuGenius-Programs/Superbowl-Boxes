@@ -3,21 +3,18 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from string import Template
 from dotenv import load_dotenv
-import random, smtplib, datetime, os
+import random, smtplib, datetime, os, defaults, players
 load_dotenv()
+
+defaults.vp_start_gui()
 
 now = datetime.datetime.now()
 
-print("Copyright (c) %d CompuGenius Programs" % now.year)
-print("http://compugeniusprograms.tk")
-print("Press enter to continue...")
-input()
-
-organizer = input("Who is the organizer of this game? ")
-num_players = int(input("How many players? "))
+organizer = defaults.return_info.organizer
+playerCount = defaults.return_info.playerCount
 used_boxes = []
 box = ['     ' for i in range(100)]
-price = float(input("How much does each box cost? "))
+price = float(defaults.return_info.boxPrice)
 
 names = []
 emails = []
@@ -26,11 +23,12 @@ costs = []
 
 class Player():
     def player(n):
+        players.vp_start_gui()
         cost = 0
         boxes = []
-        name = str(input("Name of player number %d: " % (n+1)))
-        email = str(input("%s's email: " % name))
-        box_amount = int(input("How many boxes is %s buying? " % name))
+        name = players.new_player_btn.name
+        email = players.new_player_btn.email
+        box_amount = int(players.new_player_btn.boxCount)
 
         name_split = name.split()
         name_initials = []
@@ -53,7 +51,7 @@ class Player():
         boxes.sort()
         for i in range(len(boxes)):
             boxes[i] = str(boxes[i]).zfill(2)
-            boxes[i] = str(boxes[i])[0] + ',' + str(boxes[i])[1]
+            boxes[i] = "(" + str(boxes[i])[0] + ',' + str(boxes[i])[1] + ")"
         boxes = str(boxes)
         boxes = boxes.strip('[')
         boxes = boxes.strip(']')
@@ -61,7 +59,7 @@ class Player():
 
         save_info(name, email, boxes, cost)
 
-        if (n + 1) == num_players:
+        if n + 1 == playerCount:
             email_main()
 
 def superbowl_information():
@@ -151,5 +149,5 @@ def email_main():
 
     s.quit()
 
-for n in range(num_players):
-    Player.player(n)
+for i in range(playerCount):
+    Player.player(i)
