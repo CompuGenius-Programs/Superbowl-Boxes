@@ -3,15 +3,19 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from string import Template
 from dotenv import load_dotenv
-import random, smtplib, datetime, os, defaults, players
+import random, smtplib, datetime, os, defaults, players, sys
 load_dotenv()
 
 defaults.vp_start_gui()
 
 now = datetime.datetime.now()
 
-organizer = defaults.return_info.organizer
-playerCount = defaults.return_info.playerCount
+try:
+    organizer = defaults.return_info.organizer
+    playerCount = defaults.return_info.playerCount
+except:
+    sys.exit(0)
+    
 used_boxes = []
 box = ['     ' for i in range(100)]
 price = float(defaults.return_info.boxPrice)
@@ -26,9 +30,12 @@ class Player():
         players.vp_start_gui()
         cost = 0
         boxes = []
-        name = players.new_player_btn.name
-        email = players.new_player_btn.email
-        box_amount = int(players.new_player_btn.boxCount)
+        try:
+            name = players.new_player_btn.name
+            email = players.new_player_btn.email
+            box_amount = int(players.new_player_btn.boxCount)
+        except:
+            sys.exit(0)
 
         name_split = name.split()
         name_initials = []
