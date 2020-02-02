@@ -3,7 +3,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from string import Template
 from dotenv import load_dotenv
-import random, smtplib, datetime, os, defaults, players, sys
+import random, smtplib, datetime, os, defaults, players, sys, win32ui
 load_dotenv()
 
 defaults.vp_start_gui()
@@ -68,18 +68,19 @@ class Player():
 
         if n + 1 == playerCount:
             email_main()
+            print_boxes()
 
 def superbowl_information():
     global date, superbowl_number
     now = datetime.datetime.now()
     superbowl_number = now.year - 1966
-    def get_date(month, year, day_num):
-        first_date = datetime.date(year, month, 1)
+    def get_date():
+        first_date = datetime.date(now.year, 2, 1)
         first_day = first_date.weekday()
-        day_inc = day_num + (7 if first_day > day_num else 0) - first_day
+        day_inc = 6 + (7 if first_day > 6 else 0) - first_day
         return first_date + timedelta(days=day_inc)
 
-    date = get_date(2, 2019, 6)
+    date = get_date()
     date = str(date).split('-')
     date = str(date[1] + '-' + date[2] + '-' + date[0])
 
@@ -151,10 +152,35 @@ def email_main():
 
         msg.attach(MIMEText(message, 'plain'))
 
-        s.send_message(msg)
+        try:
+            s.send_message(msg)
+        except:
+            pass
         del msg
 
     s.quit()
+
+def print_boxes():
+    display_boxes()
+    
+    th = 100
+    x = 50
+    y = 50
+
+    lines = boxes_chart.split("\n")
+    
+    hDC = win32ui.CreateDC()
+    hDC.CreatePrinterDC()
+
+    hDC.StartDoc("Superbowl Boxes")
+    hDC.StartPage()
+    for line in lines:
+        hDC.TextOut(x, y, line)
+        y += th
+    hDC.EndPage()
+    hDC.EndDoc()
+    
+
 
 for i in range(playerCount):
     Player.player(i)
