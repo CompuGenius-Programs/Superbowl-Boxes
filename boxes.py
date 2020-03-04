@@ -137,7 +137,7 @@ def email_main():
     names, emails, boxess, costs = get_info()
     message_template = read_template('message.txt')
 
-    s = smtplib.SMTP(host='smtp.gmail.com', port=587)
+    s = smtplib.SMTP(host='smtp.zoho.com', port=587)
     s.starttls()
     s.login(my_address, password)
 
